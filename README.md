@@ -67,9 +67,3 @@ After training and applying oversampling to balance classes:
 - **Feature Engineering:** Optionally, new features like `EngagementScore = tenure * MonthlyCharges / (TotalCharges + 1)` can be added for better prediction.
 
 ---
-
-## How to Use
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/VaishnapallaviDevasani/Customer_churn_prediction_neuralnetworks.git
