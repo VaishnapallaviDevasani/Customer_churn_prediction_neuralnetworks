@@ -1,90 +1,75 @@
-# Customer Churn Prediction using Neural Networks
+# Customer Churn Prediction Using Neural Networks
 
-## 📌 Project Overview
-Customer churn is when a customer stops using a company's service. Predicting churn is crucial for telecom companies to **retain customers** and reduce revenue loss.  
+## Project Overview
+This project predicts **customer churn** for a telecom company using a **neural network** built with TensorFlow and Keras.  
+Churn prediction is a critical business problem: it helps companies identify customers likely to leave, allowing them to take proactive retention measures.
 
-This project uses **Week-1 neural network concepts** (Andrew Ng’s Deep Learning Specialization) to predict whether a customer will churn, based on demographic, account, and service usage data.
+**Dataset:** [Telco Customer Churn Dataset](https://www.kaggle.com/datasets/blastchar/telco-customer-churn)
+
+**Project Goal:** Predict whether a customer will churn (leave) based on demographics, account information, services subscribed, and billing data.
 
 ---
 
-## 🗂 Dataset
-The dataset used is the **Telco Customer Churn Dataset**, which contains customer information such as:
+## Features Used
 
 - **Demographics:** `gender`, `SeniorCitizen`, `Partner`, `Dependents`
-- **Account info:** `tenure`, `Contract`, `PaperlessBilling`, `PaymentMethod`
-- **Services subscribed:** `PhoneService`, `InternetService`, `OnlineSecurity`, `StreamingTV`, etc.
+- **Account Info:** `tenure`, `Contract`, `PaperlessBilling`, `PaymentMethod`
+- **Services Subscribed:** `PhoneService`, `MultipleLines`, `InternetService`, `OnlineSecurity`, `OnlineBackup`, `DeviceProtection`, `TechSupport`, `StreamingTV`, `StreamingMovies`
 - **Charges:** `MonthlyCharges`, `TotalCharges`
-- **Target variable:** `Churn` (0 = stay, 1 = leave)
-
-**Dataset source:** [Kaggle: Telco Customer Churn](https://www.kaggle.com/blastchar/telco-customer-churn)
+- **Target:** `Churn` → 0 = stay, 1 = leave
 
 ---
 
-## 🧰 Tools & Libraries
-- Python 3  
-- Pandas, NumPy  
-- Scikit-learn  
-- TensorFlow & Keras  
-- Matplotlib, Seaborn  
+## Data Preprocessing
+
+1. **Handle Missing Values:** Converted `TotalCharges` to numeric and replaced missing values with 0.
+2. **One-Hot Encoding:** Categorical columns (`Yes/No` and text categories) were converted to numeric using one-hot encoding.
+3. **Feature Scaling:** Numeric features (`tenure`, `MonthlyCharges`, `TotalCharges`) were standardized using **Z-score normalization** to improve neural network training.
+4. **Train-Test Split:** Dataset split into 80% training and 20% testing.
 
 ---
 
-## ⚙️ Data Preprocessing
-1. **Handle missing values:**  
-   Convert `TotalCharges` to numeric, fill missing values.  
+## Neural Network Architecture (Week-1 Level)
 
-2. **Convert categorical variables to numeric:**  
-   Used **one-hot encoding** for Yes/No and text fields.  
+- **Input Layer:** Number of neurons = number of features
+- **Hidden Layer:** 8 neurons with `ReLU` activation
+- **Output Layer:** 1 neuron with `Sigmoid` activation (binary classification)
 
-3. **Feature scaling:**  
-   Standardized numeric columns (`tenure`, `MonthlyCharges`, `TotalCharges`) using **z-score normalization** for faster neural network training.
-
-4. **Split dataset:**  
-   Training set: 80% | Test set: 20%  
-
-5. **Handle imbalanced dataset:**  
-   Applied **oversampling** for churners to balance classes.
+**Loss Function:** Binary Crossentropy  
+**Optimizer:** Adam  
+**Epochs:** 20-30  
+**Batch Size:** 32
 
 ---
 
-## 🧠 Neural Network Model
-- **Architecture:**  
-  - Input layer → Hidden layer (8 neurons, ReLU) → Output layer (1 neuron, Sigmoid)
-- **Activation functions:**  
-  - Hidden layer → ReLU (learns non-linear patterns)  
-  - Output layer → Sigmoid (binary classification)
-- **Loss function:** Binary Crossentropy  
-- **Optimizer:** Adam  
-- **Epochs:** 20–30  
-- **Batch size:** 32  
+## Model Evaluation
+
+After training and applying oversampling to balance classes:
+
+| Metric       | Churn=No | Churn=Yes |
+|--------------|-----------|-----------|
+| Precision    | 0.91      | 0.55      |
+| Recall       | 0.76      | 0.80      |
+| F1-Score     | 0.83      | 0.65      |
+| Support      | 1036      | 373       |
+
+**Overall Accuracy:** 77%  
+
+> Balancing the dataset improved the recall for churners, helping the model identify more customers who are likely to leave.
 
 ---
 
-## 📈 Model Evaluation
-- **Final Accuracy:** ~81.26%  
-- **Precision, Recall, F1-score:**  
-  - Class `False` (Non-churn): High precision → correctly identifies staying customers  
-  - Class `True` (Churn): Improved recall after oversampling → better identification of churners  
+## Improvements Implemented
 
-**Metrics used:**
-- Accuracy  
-- Precision  
-- Recall  
-- F1-score  
-- Confusion Matrix  
-
-**Tip:** Adjusting prediction threshold can improve recall for churners.
+- **Class Imbalance Handling:** Applied **oversampling** to increase the number of churn cases.
+- **Feature Scaling:** Standardized numeric features for better convergence.
+- **Threshold Tuning:** Explored prediction thresholds beyond 0.5 to optimize recall.
+- **Feature Engineering:** Optionally, new features like `EngagementScore = tenure * MonthlyCharges / (TotalCharges + 1)` can be added for better prediction.
 
 ---
 
-## 🔄 Improvements & Feature Engineering
-1. **Oversampling/undersampling:** To handle class imbalance.  
-2. **Feature engineering:**  
-   Example: `EngagementScore = tenure * MonthlyCharges / (TotalCharges + 1)`  
-3. **Hidden layer tuning:** Added neurons carefully to avoid overfitting.  
-4. **Threshold tuning:** Adjusted prediction threshold for better churn detection.  
+## How to Use
 
----
-
-## 📊 Project Workflow (Flow Chart)
-
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/VaishnapallaviDevasani/Customer_churn_prediction_neuralnetworks.git
