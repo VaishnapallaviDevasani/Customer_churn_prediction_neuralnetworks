@@ -1,46 +1,44 @@
-# Customer Churn Prediction Using Neural Networks
+# Customer Churn Prediction (Neural Networks)
 
 ## Project Overview
-This project predicts **customer churn** for a telecom company using a **neural network** built with TensorFlow and Keras.  
-Churn prediction is a critical business problem: it helps companies identify customers likely to leave, allowing them to take proactive retention measures.
+This project aims to predict telecom customers who are likely to churn (leave) using a feed-forward neural network. By identifying potential churners early, telecom companies can take targeted actions to retain customers, reducing revenue loss.
 
-**Dataset:** [Telco Customer Churn Dataset](https://www.kaggle.com/datasets/blastchar/telco-customer-churn)
-
-**Project Goal:** Predict whether a customer will churn (leave) based on demographics, account information, services subscribed, and billing data.
-
----
-
-## Features Used
-
-- **Demographics:** `gender`, `SeniorCitizen`, `Partner`, `Dependents`
-- **Account Info:** `tenure`, `Contract`, `PaperlessBilling`, `PaymentMethod`
-- **Services Subscribed:** `PhoneService`, `MultipleLines`, `InternetService`, `OnlineSecurity`, `OnlineBackup`, `DeviceProtection`, `TechSupport`, `StreamingTV`, `StreamingMovies`
-- **Charges:** `MonthlyCharges`, `TotalCharges`
-- **Target:** `Churn` → 0 = stay, 1 = leave
+The dataset contains 7000+ customers with features such as demographic information, services used, and billing details. The target variable is `Churn` (Yes/No).
 
 ---
 
 ## Data Preprocessing
+- **Feature Cleaning:** Converted `TotalCharges` to numeric and handled missing values.
+- **Categorical Variables:** One-hot encoding for categorical columns (gender, contract type, payment method, etc.).
+- **Scaling:** StandardScaler applied to numeric features (`tenure`, `MonthlyCharges`, `TotalCharges`) for uniformity.
+- **Train-Test Split:** 80% train, 20% test set.
 
-1. **Handle Missing Values:** Converted `TotalCharges` to numeric and replaced missing values with 0.
-2. **One-Hot Encoding:** Categorical columns (`Yes/No` and text categories) were converted to numeric using one-hot encoding.
-3. **Feature Scaling:** Numeric features (`tenure`, `MonthlyCharges`, `TotalCharges`) were standardized using **Z-score normalization** to improve neural network training.
-4. **Train-Test Split:** Dataset split into 80% training and 20% testing.
+---
+
+## Handling Class Imbalance
+The dataset has more non-churners than churners:
+- **Before SMOTE:** False: 4138, True: 1496  
+- **After SMOTE (on training data only):** False: 4138, True: 4138
+
+**Technique Used:** SMOTE (Synthetic Minority Oversampling Technique) to generate synthetic examples of minority class (churners) and balance the training data.
 
 ---
 
-## Neural Network Architecture (Week-1 Level)
-
-- **Input Layer:** Number of neurons = number of features
-- **Hidden Layer:** 8 neurons with `ReLU` activation
-- **Output Layer:** 1 neuron with `Sigmoid` activation (binary classification)
-
-**Loss Function:** Binary Crossentropy  
-**Optimizer:** Adam  
-**Epochs:** 20-30  
-**Batch Size:** 32
+## Neural Network Model
+- **Architecture:**
+  - Input Layer → Dense(32, ReLU) → Dropout(0.3)
+  - Dense(16, ReLU) → Dropout(0.3)
+  - Output Layer: Dense(1, Sigmoid)
+- **Activation Functions:**  
+  - ReLU for hidden layers  
+  - Sigmoid for binary classification output
+- **Regularization:** L2 regularization and Dropout used to prevent overfitting
+- **Optimizer:** Adam  
+- **Loss Function:** Binary Crossentropy
+- **Threshold for predicting churn:** 0.4 (optimized for better recall of churners)
 
 ---
+## Before Changes
 
 ## Model Evaluation
 
@@ -55,15 +53,34 @@ After training and applying oversampling to balance classes:
 
 **Overall Accuracy:** 77%  
 
-> Balancing the dataset improved the recall for churners, helping the model identify more customers who are likely to leave.
+## Results on Test Set
+| Metric | Non-Churn (False) | Churn (True) | Overall |
+|--------|-----------------|---------------|---------|
+| Precision | 0.88 | 0.62 | - |
+| Recall    | 0.85 | 0.70 | - |
+| F1-score  | 0.86 | 0.66 | - |
+| Accuracy  | - | - | 81.33% |
+
+**Interpretation:**  
+- Recall for churners improved from 0.56 → 0.70 compared to baseline Week-1 model.  
+- Overall accuracy remains high (~81%).  
+- Model now detects 70% of potential churners, enabling targeted retention efforts.
 
 ---
 
-## Improvements Implemented
-
-- **Class Imbalance Handling:** Applied **oversampling** to increase the number of churn cases.
-- **Feature Scaling:** Standardized numeric features for better convergence.
-- **Threshold Tuning:** Explored prediction thresholds beyond 0.5 to optimize recall.
-- **Feature Engineering:** Optionally, new features like `EngagementScore = tenure * MonthlyCharges / (TotalCharges + 1)` can be added for better prediction.
+## Key Improvements from Week-1
+1. **SMOTE oversampling:** Balanced training data for better learning of minority class.
+2. **Threshold tuning:** Lowered decision threshold to 0.4 to improve churner recall.
+3. **Network capacity increase:** More neurons in hidden layers (32 → 16) for richer learning.
+4. **Regularization:** Added Dropout and L2 to prevent overfitting on synthetic samples.
 
 ---
+
+## Technologies Used
+- Python, Pandas, NumPy, Scikit-learn
+- TensorFlow, Keras
+- Matplotlib, Seaborn
+- Imbalanced-learn (SMOTE)
+
+---
+
